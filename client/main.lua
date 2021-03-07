@@ -194,6 +194,8 @@ local function createMenu()
                         TriggerServerEvent("pz_integratedshop:sendPurchaseRequest", selectedCat, selectedOffer, {hash = selectedOffer.infos.args.hash})
                     elseif Shop[selectedCat].type == "money" then
                         TriggerServerEvent("pz_integratedshop:sendPurchaseRequest", selectedCat, selectedOffer, {money = selectedOffer.infos.args.cash})
+                    elseif Shop[selectedCat].type == "items" then
+                        TriggerServerEvent("pz_integratedshop:sendPurchaseRequest", selectedCat, selectedOffer, {ammount = selectedOffer.infos.args.ammount, item = selectedOffer.infos.args.itemID})
                     else
                         TriggerServerEvent("pz_integratedshop:sendPurchaseRequest", selectedCat, selectedOffer, {}) -- TODO ACHAT
                     end

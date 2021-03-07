@@ -1,10 +1,18 @@
-Currency = "ImpulsionCoins"
-CurrencyShort = "IC"
+Currency = "RedBadCoins"
+CurrencyShort = "RBC"
 
-CreditsHook = "https://discord.com/api/webhooks/787442226162171946/zKU4FYtzjkbN9wQnSYuNYZ4tGW1vqn86Ri8rReTdJcvwfwmm70ADNsq50y-kS4jrcy2i"
-ShopHook = "https://discord.com/api/webhooks/787442101444673596/K9AHnXyvWgxL_77SYWo-HJDV2PGXwvtA-HRLpjLniY_xynEiwFy7QD4PsmPQUG2Gcb5f"
+CreditsHook = "https://discord.com/api/webhooks/818160320643858473/-3jOX66JrIvpgxPf9PYMp-t_5boHxwiZOpNslgQZRSpdz78MUzjolFfLEF7U3A6BfwjU"
+ShopHook = "https://discord.com/api/webhooks/818160320643858473/-3jOX66JrIvpgxPf9PYMp-t_5boHxwiZOpNslgQZRSpdz78MUzjolFfLEF7U3A6BfwjU"
+NotConnectedHook = ""
 
 Shop = {
+
+    ["Objects"] = {
+        type = "items",
+        list = {
+            {label = "Bière x2", price = 4500, description = nil, args = {itemID = "beer", ammount = 2}}
+        }
+    },
 
     ["Voitures"] = {
         type = "cars",
@@ -35,5 +43,5 @@ Shop = {
 }
 
 Admins = {
-    "license:d67dec9ddd7c3d7f4e160f675224b06eb5a2d008"
+    "license:8fc3f9bf5017c451d19593ae7d1105989d6635e0"
 }

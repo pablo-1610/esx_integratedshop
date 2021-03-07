@@ -16,7 +16,7 @@ client_scripts {
 }
 
 server_scripts {
-    '@fox/server/mysql/MySQL.lua',
+    '@mysql-async/lib/MySQL.lua',
     'configuration.lua',
     'server/main.lua'
 }

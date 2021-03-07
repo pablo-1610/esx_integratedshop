@@ -1,3 +1,6 @@
+ESX = nil
+TriggerEvent("::{korioz#0110}::esx:getSharedObject", function(obj) ESX = obj end)
+
 local accounts = {}
 local prefix = "^1[Shop] ^7"
 
@@ -75,8 +78,11 @@ local function rmvCredits(targetLicense, ammount)
         trace("Tentative de supprimer des impulsioncoins à une entrée non valide: ^3"..targetLicense)
         return
     end 
-    if (accounts[targetLicense] - ammount) <= 0 then return end
-    accounts[targetLicense] = accounts[targetLicense] - ammount
+    if (accounts[targetLicense] - ammount) <= 0 then
+        accounts[targetLicense] = 0
+    else
+        accounts[targetLicense] = accounts[targetLicense] - ammount
+    end
     MySQL.Async.execute('UPDATE credits SET credits = @a, lastUpdate = @b WHERE license = @c',{['a'] = accounts[targetLicense],['b'] = getDate(),['c'] = targetLicense},
     function(affectedRows) trace("Retrait de ^3"..ammount.." "..Currency.." ^7sur la license ^3"..targetLicense) end)
 end
@@ -139,10 +145,22 @@ AddEventHandler("pz_integratedshop:sendPurchaseRequest", function(category, offe
     end
 
     if Shop[category].type == "money" then
+        local xPlayer = ESX.GetPlayerFromId(_src)
         if not args.money then
             TriggerClientEvent("pz_integratedshop:callbackPurchase", _src, 3, {})
             return
         end
+        xPlayer.addAccountMoney('bank', args.money)
+        TriggerClientEvent("pz_integratedshop:callbackPurchase", _src, 1, {})
+    end
+
+    if Shop[category].type == "items" then
+        local xPlayer = ESX.GetPlayerFromId(_src)
+        if not args.ammount or not args.item then
+            TriggerClientEvent("pz_integratedshop:callbackPurchase", _src, 3, {})
+            return
+        end
+        xPlayer.addInventoryItem(args.item, args.ammount)
         TriggerClientEvent("pz_integratedshop:callbackPurchase", _src, 1, {})
     end
 
@@ -155,8 +173,16 @@ RegisterCommand("credit", function(source, args, rawCommand)
     if source == 0 then
         if args[1] == nil or args[2] == nil then return end
         local ammount = tonumber(args[2])
-        local license = tostring(args[1])
-        sendToDiscord("Logs crédits", "Ajout de **"..ammount.."** "..Currency.." sur la license __"..license.."__", 56108,CreditsHook)
+        local id = tonumber(args[1])
+
+        local xPlayers = ESX.GetPlayers()
+        if not xPlayers[id] then
+            sendToDiscord("Logs crédits", "Un achat a voulu être effectué sur l'ID "..id.." mais il était déconnecté", 16711680,NotConnectedHook)
+            return
+        end
+
+        getLicense(id)
+        sendToDiscord("Logs crédits", "Ajout de **"..ammount.."** "..Currency.." sur le joueur __"..GetPlayerName(id).."__ (sID: "..id..")", 56108,CreditsHook)
         addCredits(license,ammount)
     else
         if args[1] == nil or args[2] == nil or args[3] == nil then return end
